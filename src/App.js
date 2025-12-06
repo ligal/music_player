@@ -109,9 +109,63 @@ export default function App() {
     if (!audio) return;
     if (currentFolder && currentIndex != null) {
       audio.src = (publicUrlBase ? publicUrlBase + '/music/' : '/music/') + currentFolder.songs[currentIndex].file;
+      // Play from user gesture; catch any promise rejection
       audio.play().catch(() => {});
     }
   }, [currentFolder, currentIndex, publicUrlBase]);
+
+  // Media Session: set metadata and action handlers so iOS shows controls on lock screen / Control Center
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !('mediaSession' in navigator)) return;
+    try {
+      if (currentFolder && currentIndex != null) {
+        const track = currentFolder.songs[currentIndex];
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: track.name,
+          artist: currentFolder.name || '',
+          album: '',
+          artwork: []
+        });
+      } else {
+        try { navigator.mediaSession.metadata = null; } catch (e) { /* ignore */ }
+      }
+
+      navigator.mediaSession.setActionHandler('play', () => { audio.play().catch(() => {}); });
+      navigator.mediaSession.setActionHandler('pause', () => { audio.pause(); });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        if (!currentFolder || currentIndex == null) return;
+        const prev = Math.max(0, currentIndex - 1);
+        if (prev !== currentIndex) {
+          setCurrentIndex(prev);
+        } else if (audio) {
+          audio.currentTime = 0;
+        }
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        if (!currentFolder || currentIndex == null) return;
+        const next = currentIndex + 1;
+        if (next < (currentFolder.songs ? currentFolder.songs.length : 0)) {
+          setCurrentIndex(next);
+        } else if (audio) {
+          audio.pause();
+        }
+      });
+    } catch (e) {
+      // ignore any errors setting media session
+    }
+
+    return () => {
+      try {
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.setActionHandler('play', null);
+          navigator.mediaSession.setActionHandler('pause', null);
+          navigator.mediaSession.setActionHandler('previoustrack', null);
+          navigator.mediaSession.setActionHandler('nexttrack', null);
+        }
+      } catch (e) {}
+    };
+  }, [currentFolder, currentIndex]);
 
   function handleSelectFolder(folder) {
     setCurrentFolder(folder);
@@ -168,7 +222,7 @@ export default function App() {
           </div>
           <SongList songs={currentFolder?.songs} onPlay={handlePlay} />
           <div className="player-controls">
-            <audio ref={audioRef} controls />
+            <audio ref={audioRef} controls crossOrigin="anonymous" preload="metadata" playsInline />
             {currentIndex != null && currentFolder && (
               <div className="now-playing">Now playing: {currentFolder.songs[currentIndex].name}</div>
             )}

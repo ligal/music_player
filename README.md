@@ -31,4 +31,22 @@ Deployment
 Notes
 
 - The UI contains placeholders for unicorn/princess art. Replace public/unicorn.png and any other assets as desired.
-- The audio files are referenced by path under /music/ in the app. When deployed to gh-pages, GitHub Pages will serve public/ files at the repository root path, with the site usually available at https://<user>.github.io/<repo>/.
+
+iOS background playback notes
+
+- iOS Safari allows audio to continue playing when the browser is backgrounded or the device is locked, but playback must be started by an explicit user gesture (tap/click). The app cannot resume playback after the user force-quits (kills) Safari.
+
+- To improve background playback compatibility on iOS Safari, this project uses a plain HTMLAudioElement and avoids WebAudio-only playback. The audio element has attributes: crossOrigin="anonymous", preload="metadata", playsInline.
+
+- The app also sets Media Session metadata and action handlers so iOS shows track metadata and play/pause/next controls on the lock screen and Control Center.
+
+Testing on iOS
+
+1. Open the site in Safari on an iOS device.
+2. Tap a song to start playback (user gesture required).
+3. Press the Home button or swipe up to background Safari, or lock the screen. Playback should continue.
+
+Limitations
+
+- Playback will not continue if the user force-quits Safari.
+- Some older iOS versions may not support the Media Session API; metadata will not show there but playback may still continue.
