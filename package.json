@@ -1,0 +1,33 @@
+{
+  "name": "music_player",
+  "version": "0.1.0",
+  "homepage": "https://ligal.github.io/music_player",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "prebuild": "node scripts/generate-manifest.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "generate-manifest": "node scripts/generate-manifest.js"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}

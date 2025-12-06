@@ -1,0 +1,11 @@
+/* Basic global styles */
+html, body, #root { height: 100%; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: linear-gradient(180deg,#fffafc 0%, #f7fdff 100%); color: #333; }
+a { color: inherit; }
+button { font-family: inherit; }
+
+/* small utility */
+.container { max-width: 1100px; margin: 0 auto; }
+
+/* audio element tweaks for child-friendly size */
+audio { width: 100%; max-width: 420px; height: 40px; }
