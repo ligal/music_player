@@ -34,7 +34,7 @@ export default function App() {
   const [currentFolder, setCurrentFolder] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(null);
   const [fetchLog, setFetchLog] = useState([]);
-  const [showDebug, setShowDebug] = useState(true);
+  const [showDebug, setShowDebug] = useState(false);
   const audioRef = useRef(null);
 
   // PUBLIC_URL-aware base (works when app is served from a subpath)
@@ -126,7 +126,6 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <h1>Unicorn Music Player</h1>
-        <p>Joyful, child-friendly tunes</p>
       </header>
       <main className="app-main">
         <aside className="sidebar">
@@ -164,7 +163,6 @@ export default function App() {
           )}
         </aside>
         <section className="content">
-          <div className="unicorn-hero">Your unicorn art goes here (replace later)</div>
           <div className="folder-info">
             {currentFolder ? <h2>Folder: {currentFolder.name}</h2> : <h2>Select a folder</h2>}
           </div>
